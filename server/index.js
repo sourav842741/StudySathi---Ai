@@ -23,7 +23,7 @@ app.post(
 );
 
 app.use(cors(
-    {origin:"https://studysathi-aiclient.onrender.com",
+    {origin:"https://studysathi-ai-client.onrender.com",
         credentials:true,
         methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
     }
