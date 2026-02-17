@@ -1,18 +1,3 @@
-![Logo](https://raw.githubusercontent.com/sourav842741/StudySathi---Ai/main/assets/studysathi-logo.png) <!-- TODO: Add a proper project logo or create one -->
-
-[![GitHub stars](https://img.shields.io/github/stars/sourav842741/StudySathi---Ai?style=for-the-badge)](https://github.com/sourav842741/StudySathi---Ai/stargazers)
-
-[![GitHub forks](https://img.shields.io/github/forks/sourav842741/StudySathi---Ai?style=for-the-badge)](https://github.com/sourav842741/StudySathi---Ai/network)
-
-[![GitHub issues](https://img.shields.io/github/issues/sourav842741/StudySathi---Ai?style=for-the-badge)](https://github.com/sourav842741/StudySathi---Ai/issues)
-
-[![GitHub license](https://img.shields.io/github/license/sourav842741/StudySathi---Ai?style=for-the-badge)](LICENSE) <!-- TODO: Add LICENSE file if not present -->
-
-**Your intelligent companion for smarter studying. Unleash the power of AI to ace your exams!**
-
-[Live Demo](https://studysathi-ai-client.onrender.com/) 
-
-</div>
 
 ## 📖 Overview
 
