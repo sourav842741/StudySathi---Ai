@@ -5,137 +5,103 @@ import { useSelector } from 'react-redux'
 import TopicForm from '../components/TopicForm'
 import Sidebar from '../components/Sidebar'
 import FinalResult from '../components/FinalResult'
+import Navbar from '../components/Navbar'
+import Footer from '../components/Footer'
+import { FiBookOpen, FiArrowLeft, FiAlertCircle } from 'react-icons/fi'
+
 function Notes() {
   const navigate = useNavigate()
   const { userData } = useSelector((state) => state.user)
-  const credits = userData.credits
-  const [loading,setLoading]= useState(false)
-  const [result , setResult] = useState(null)
-  const [error,setError] = useState("")
+  const credits = userData?.credits ?? 0
+  const [loading, setLoading] = useState(false)
+  const [result, setResult] = useState(null)
+  const [error, setError] = useState("")
 
   return (
-    <div className='min-h-screen bg-gradient-to-br from-gray-100 to-gray-200 px-6 py-8'>
-      <motion.header
-        initial={{ opacity: 0, y: -15 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
+    <div className="min-h-screen bg-[#fbfbf9] text-stone-900 flex flex-col justify-between">
+      <Navbar />
 
-        className=" mb-10
-            rounded-2xl
-            bg-black/80 backdrop-blur-xl
-            border border-white/10
-            px-8 py-6
-            shadow-[0_20px_45px_rgba(0,0,0,0.6)] items-start
-            flex md:items-center justify-between gap-4 flex-col md:flex-row"
-      >
-        <div onClick={() => navigate("/")} className='cursor-pointer'><h1 className='text-2xl font-bold
-            bg-linear-to-r from-white via-gray-300 to-white
-            bg-clip-text text-transparent'>StudySathi AI</h1>
-          <p className='text-sm text-gray-300 mt-1'>AI-powered exam-oriented notes & revision</p></div>
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full space-y-8">
+        
+        {/* Breadcrumb & Subheading */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <div className="flex items-center gap-2 text-xs font-medium text-stone-500 mb-1">
+              <button
+                onClick={() => navigate("/")}
+                className="hover:text-stone-900 transition-colors flex items-center gap-1 cursor-pointer"
+              >
+                <FiArrowLeft className="w-3.5 h-3.5" />
+                <span>Home</span>
+              </button>
+              <span>/</span>
+              <span className="text-stone-900 font-semibold">Workspace</span>
+            </div>
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-stone-900 tracking-tight">
+              AI Note Generator
+            </h1>
+          </div>
 
-        <div className='flex items-center gap-4 flex-wrap'>
-          <button className='flex items-center gap-2 
-    px-4 py-2 rounded-full
-    bg-white/10
-    border border-white/20
-    text-white text-sm' onClick={() => navigate("/pricing")}>
-            <span className='text-xl'>💠</span>
-            <span>{credits}</span>
-            <motion.span whileHover={{ scale: 1.2 }}
-              whileTap={{ scale: 0.97 }}
-              className='ml-2 h-5 w-5 flex items-center justify-center
-                        rounded-full bg-white  text-xs font-bold'
-            >
-              ➕
-
-            </motion.span>
-
-
-          </button>
-          <button onClick={()=>navigate("/history")} className='px-4 py-3 rounded-full
-      text-sm font-medium
-      bg-white/10
-      border border-white/20
-      text-white
-      hover:bg-white/20
-      transition
-      flex items-center gap-2'>
-        📚 Your Notes
-
-
+          <button
+            onClick={() => navigate("/history")}
+            className="self-start sm:self-auto px-4 py-2 rounded-xl text-xs font-semibold bg-white hover:bg-stone-50 border border-stone-300 text-stone-800 transition-colors flex items-center gap-2 cursor-pointer shadow-xs"
+          >
+            <span>📚</span>
+            <span>View Saved Notes</span>
           </button>
         </div>
 
+        {/* Input Form */}
+        <TopicForm
+          loading={loading}
+          setResult={setResult}
+          setLoading={setLoading}
+          setError={setError}
+        />
 
-      </motion.header>
-
-
-      <motion.div 
-          className="mb-12">
-        <TopicForm loading={loading} setResult={setResult} setLoading={setLoading} setError={setError}/>
-      </motion.div>
-
-
-      {loading && (
-          <motion.div
-            animate={{ opacity: [0.4, 1, 0.4] }}
-            transition={{ repeat: Infinity, duration: 1.2 }}
-            className="text-center text-black font-medium mb-6"
-          >
-            Generating exam-focused notes…
-          </motion.div>
-        )}
-
+        {/* Error notification */}
         {error && (
-          <div className="mb-6 text-center text-red-600 font-medium">
-            {error}
+          <div className="p-4 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs font-medium flex items-center gap-2">
+            <FiAlertCircle className="w-4 h-4 text-red-500 shrink-0" />
+            <span>{error}</span>
           </div>
         )}
 
-    {!result && <motion.div whileHover={{ scale: 1.02 }}
-            className="
-              h-64
-              rounded-2xl
-              flex flex-col items-center justify-center
-              bg-white/60 backdrop-blur-lg
-              border border-dashed border-gray-300
-              text-gray-500
-              shadow-inner
-            ">
-               <span className="text-4xl mb-3">📘</span>
-            <p className="text-sm">
-              Generated notes will appear here
+        {/* Empty State placeholder */}
+        {!result && !loading && (
+          <div className="py-16 rounded-2xl bg-white border border-dashed border-stone-300 flex flex-col items-center justify-center text-center px-4">
+            <div className="w-12 h-12 rounded-2xl bg-stone-100 border border-stone-200 flex items-center justify-center text-xl mb-3">
+              📖
+            </div>
+            <h3 className="text-sm font-bold text-stone-900 mb-1">
+              No notes generated yet
+            </h3>
+            <p className="text-xs text-stone-500 max-w-sm leading-relaxed">
+              Fill in your topic name, academic grade, and preferences above, then click Generate Notes.
             </p>
+          </div>
+        )}
 
-     </motion.div>}
+        {/* Generated Result display */}
+        {result && (
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            
+            {/* Left Column: Exam Sidebar Summary */}
+            <div className="lg:col-span-4">
+              <Sidebar result={result} />
+            </div>
 
+            {/* Right Column: Full Final Notes */}
+            <div className="lg:col-span-8 bg-white rounded-2xl border border-stone-200 shadow-xs p-6 sm:p-8">
+              <FinalResult result={result} />
+            </div>
 
-    {result && <motion.div
-    initial={{ opacity: 0, y: 30 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ duration: 0.4 }}
-     className='flex flex-col
-      lg:grid lg:grid-cols-4
-      gap-6'>
+          </div>
+        )}
 
-        <div className='lg:col-span-1'>
-          <Sidebar result={result}/>
+      </main>
 
-
-        </div>
-
-        <div className='lg:col-span-3
-        rounded-2xl
-        bg-white
-        shadow-[0_15px_40px_rgba(0,0,0,0.15)]
-        p-6'>
-          <FinalResult result={result}/>
-
-        </div>
-
-
-    </motion.div>
-}
+      <Footer />
     </div>
   )
 }

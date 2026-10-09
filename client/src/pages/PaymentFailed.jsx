@@ -1,61 +1,62 @@
 import React, { useEffect } from 'react'
 import { motion } from "motion/react"
-import { FaTimesCircle } from "react-icons/fa";
-import { getCurrentUser } from '../services/api';
-import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { FiAlertTriangle, FiArrowLeft, FiRefreshCw } from "react-icons/fi"
+import { getCurrentUser } from '../services/api'
+import { useDispatch } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
+import Navbar from '../components/Navbar'
+import Footer from '../components/Footer'
+
 function PaymentFailed() {
-    const dispatch = useDispatch()
-    const navigate = useNavigate()
-    useEffect(()=>{
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
 
-        getCurrentUser(dispatch)
+  useEffect(() => {
+    getCurrentUser(dispatch)
+  }, [dispatch])
 
-        const t = setTimeout(() => {
+  return (
+    <div className="min-h-screen bg-[#fbfbf9] text-stone-900 flex flex-col justify-between">
+      <Navbar />
 
-            navigate("/")
+      <main className="max-w-md mx-auto px-6 py-16 flex-1 flex items-center justify-center w-full">
+        <div className="bg-white rounded-2xl border border-stone-200 shadow-sm p-8 text-center space-y-5 w-full">
+          <div className="w-16 h-16 rounded-full bg-red-50 text-red-600 border border-red-200 flex items-center justify-center text-3xl mx-auto">
+            <FiAlertTriangle />
+          </div>
 
-            
-        }, 5000);
+          <div className="space-y-1.5">
+            <h1 className="text-2xl font-extrabold text-stone-900 tracking-tight">
+              Payment Incomplete
+            </h1>
+            <p className="text-xs text-stone-600 leading-relaxed">
+              The payment was not completed or was cancelled. No charges were made to your card.
+            </p>
+          </div>
 
-        return ()=> clearTimeout(t)
+          <div className="pt-2 space-y-2">
+            <button
+              onClick={() => navigate("/pricing")}
+              className="w-full py-3 px-4 rounded-xl bg-stone-900 hover:bg-stone-800 text-white font-semibold text-xs transition-colors flex items-center justify-center gap-2 cursor-pointer shadow-xs"
+            >
+              <FiRefreshCw className="w-4 h-4" />
+              <span>Try Again</span>
+            </button>
 
-    },[])
-    return (
-        <div className='min-h-screen flex flex-col items-center justify-center p-4 gap-4'>
-            <motion.div
-                initial={{ scale: 0, rotate: -180 }}
-                animate={{ scale: 1, rotate: 360 }}
-                transition={{
-                    duration: 0.8,
-                    ease: "easeOut"
-                }}
-                className="text-red-500 text-6xl">
-                <FaTimesCircle />
-
-            </motion.div>
-
-            <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3 }}
-        className="text-2xl font-bold text-red-600">
-            Payment Failed
-
-            </motion.h1>
-
-            <motion.p 
-            initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.6 }}
-        className="text-gray-500 text-sm">
-
-               Redirecting to home...
-
-            </motion.p>
-
+            <button
+              onClick={() => navigate("/")}
+              className="w-full py-2.5 px-4 rounded-xl bg-white hover:bg-stone-50 border border-stone-200 text-stone-700 font-semibold text-xs transition-colors flex items-center justify-center gap-2 cursor-pointer"
+            >
+              <FiArrowLeft className="w-4 h-4" />
+              <span>Return to Dashboard</span>
+            </button>
+          </div>
         </div>
-    )
+      </main>
+
+      <Footer />
+    </div>
+  )
 }
 
 export default PaymentFailed

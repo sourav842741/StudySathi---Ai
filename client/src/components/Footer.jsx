@@ -1,88 +1,98 @@
 import React from 'react'
-import { motion } from "motion/react"
 import logo from "../assets/logo.png"
 import { useNavigate } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import axios from 'axios'
 import { serverUrl } from '../App'
 import { setUserData } from '../redux/userSlice'
+
 function Footer() {
-    const navigate = useNavigate()
-     const dispatch = useDispatch()
-        const handleSignOut = async () => {
-            try {
-                await axios.get(serverUrl+ "/api/auth/logout" , {withCredentials:true})
-                dispatch(setUserData(null))
-                navigate("/auth")
-                
-                
-            } catch (error) {
-                console.log(error)
-            }
-        }
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
+
+  const handleSignOut = async () => {
+    try {
+      await axios.get(serverUrl + "/api/auth/logout", { withCredentials: true })
+      dispatch(setUserData(null))
+      navigate("/auth")
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   return (
-    <motion.div 
-    initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.6 }}
-    className='z-10 mx-6 mb-6 mt-24
-  rounded-2xl
-  bg-gradient-to-br from-black/90 via-black/80 to-black/90
-  backdrop-blur-2xl
-  border border-white/10
-  px-8 py-8
-  shadow-[0_25px_60px_rgba(0,0,0,0.7)]'>
-    <div className='grid grid-cols-1 md:grid-cols-3 gap-8 items-start'>
-        <motion.div 
-        whileHover={{ rotateX: 6, rotateY: -6 }}
-          className="flex flex-col gap-4 transform-gpu"
-          style={{ transformStyle: "preserve-3d" }}>
-            <div className="flex items-center gap-3 cursor-pointer"
-            style={{ transform: "translateZ(20px)" }}>
-                <img src={logo} alt="logo" className='h-9 w-9 object-contain' />
-                <span className="
-                text-lg font-semibold
-                bg-gradient-to-br from-white via-gray-300 to-white
-                bg-clip-text text-transparent
-              "
-              style={{ textShadow: "0 6px 18px rgba(0,0,0,0.4)" }}>
-                 StudySathi <span className="text-gray-400">AI</span>
+    <footer className="border-t border-stone-200 bg-white mt-16 py-12">
+      <div className="max-w-7xl mx-auto px-6">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 pb-10">
+          
+          {/* Brand Info */}
+          <div className="md:col-span-2 space-y-3">
+            <div className="flex items-center gap-2.5">
+              <img src={logo} alt="StudySathi AI" className="h-7 w-7 object-contain" />
+              <span className="text-base font-bold text-stone-900">
+                StudySathi <span className="text-emerald-700">AI</span>
               </span>
-
             </div>
-            <p className="text-sm text-gray-300 max-w-sm">StudySathi AI helps students generate exam-focused notes,
-            revision material, diagrams, and printable PDFs using AI.</p>
+            <p className="text-xs text-stone-600 max-w-sm leading-relaxed">
+              StudySathi AI is designed for students seeking clean, focused, high-yield study material without unnecessary distractions. Generate exam notes, diagrams, and print-ready PDFs.
+            </p>
+          </div>
 
-        </motion.div>
-
-        <div className='text-center'>
-            <h1 className='text-sm font-semibold text-white mb-4'>Quick Links</h1>
-            <ul className='space-y-2 text-sm'>
-                <li onClick={()=>navigate("/notes")} className='text-gray-300 hover:text-white transition-colors'>
-                    Notes
-                </li>
-                <li onClick={()=>navigate("/history")} className='text-gray-300 hover:text-white transition-colors'>History</li>
-                <li onClick={()=>navigate("/pricing")} className='text-gray-300 hover:text-white transition-colors'>Add Credits</li>
+          {/* Quick Links */}
+          <div className="space-y-3">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-stone-900">Workspace</h4>
+            <ul className="space-y-2 text-xs">
+              <li>
+                <button
+                  onClick={() => navigate("/notes")}
+                  className="text-stone-600 hover:text-stone-900 transition-colors cursor-pointer"
+                >
+                  Generate Notes
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => navigate("/history")}
+                  className="text-stone-600 hover:text-stone-900 transition-colors cursor-pointer"
+                >
+                  Past Notes History
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => navigate("/pricing")}
+                  className="text-stone-600 hover:text-stone-900 transition-colors cursor-pointer"
+                >
+                  Purchase Credits
+                </button>
+              </li>
             </ul>
-        </div>
- <div className='text-center'>
-            <h1 className='text-sm font-semibold text-white mb-4'>Support & Account</h1>
-            <ul className='space-y-2 text-sm'>
-                <li onClick={handleSignOut} className='text-red-400 hover:text-red-300 transition-colors'>SignOut</li>
-                <li className='text-gray-300 hover:text-white transition-colors'>sourav20975@gmail.com</li>
+          </div>
+
+          {/* Account / Support */}
+          <div className="space-y-3">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-stone-900">Support</h4>
+            <ul className="space-y-2 text-xs">
+              <li className="text-stone-600">sourav20975@gmail.com</li>
+              <li>
+                <button
+                  onClick={handleSignOut}
+                  className="text-red-600 hover:text-red-700 transition-colors cursor-pointer"
+                >
+                  Sign Out
+                </button>
+              </li>
             </ul>
+          </div>
+
         </div>
 
-    </div>
-     <div className="my-6 h-px bg-white/10" />
-     <p className='text-center text-xs text-gray-500'>
-        © {new Date().getFullYear()} StudySathi AI. All rights reserved.
-     </p>
-   
-
-      
-    </motion.div>
+        <div className="border-t border-stone-100 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-stone-500">
+          <p>© {new Date().getFullYear()} StudySathi AI. Built for smart exam prep.</p>
+          <p className="text-stone-400">Strictly academic & study revision tool</p>
+        </div>
+      </div>
+    </footer>
   )
 }
 

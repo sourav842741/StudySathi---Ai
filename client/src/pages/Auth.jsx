@@ -1,138 +1,184 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { motion } from "motion/react"
-import { FcGoogle } from "react-icons/fc";
-import { signInWithPopup } from 'firebase/auth';
-import { auth, provider } from '../utils/firebase';
+import { FcGoogle } from "react-icons/fc"
+import { signInWithPopup } from 'firebase/auth'
+import { auth, provider } from '../utils/firebase'
 import axios from "axios"
-import { serverUrl } from '../App';
-import { useDispatch } from 'react-redux';
-import { setUserData } from '../redux/userSlice';
+import { serverUrl } from '../App'
+import { useDispatch } from 'react-redux'
+import { setUserData } from '../redux/userSlice'
+import logo from "../assets/logo.png"
+import { FiCheckCircle, FiBookOpen, FiFileText, FiPieChart, FiDownload, FiArrowRight } from "react-icons/fi"
+
 function Auth() {
   const dispatch = useDispatch()
+  const [loading, setLoading] = useState(false)
+  const [errorMsg, setErrorMsg] = useState("")
 
   const handleGoogleAuth = async () => {
-    
     try {
-      const response = await signInWithPopup(auth,provider)
-      const User = response.user
-      const name = User.displayName
-      const email = User.email
-      const result = await axios.post(serverUrl + "/api/auth/google" , {name , email},{
-        withCredentials:true
-      })
+      setLoading(true)
+      setErrorMsg("")
+      const response = await signInWithPopup(auth, provider)
+      const user = response.user
+      const name = user.displayName
+      const email = user.email
+
+      const result = await axios.post(
+        serverUrl + "/api/auth/google",
+        { name, email },
+        { withCredentials: true }
+      )
       dispatch(setUserData(result.data))
     } catch (error) {
-      console.log(error)
+      console.error(error)
+      setErrorMsg("Sign-in failed. Please ensure third-party cookies/popups are allowed and try again.")
+    } finally {
+      setLoading(false)
     }
   }
+
   return (
-    <div className='min-h-screen overflow-hidden bg-white text-black px-8'>
-        <motion.header 
-        initial = {{opacity: 0 , y:-15}}
-        animate = {{opacity:1 , y:0}}
-        transition={{duration:1.5}}
-       
-        className=" max-w-7xl mx-auto mt-8
-          rounded-2xl
-          bg-black/80 backdrop-blur-xl
-          border border-white/10
-          px-8 py-6
-          shadow-[0_20px_45px_rgba(0,0,0,0.6)]"
-          >
-            <h1 className='text-2xl font-bold
-            bg-linear-to-r from-white via-gray-300 to-white
-            bg-clip-text text-transparent'>StudySathi AI</h1>
-            <p className='text-sm text-gray-300 mt-1'>AI-powered exam-oriented notes & revision</p>
+    <div className="min-h-screen bg-[#fbfbf9] text-stone-900 flex flex-col justify-between">
+      
+      {/* Top Header */}
+      <header className="border-b border-stone-200 bg-white">
+        <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <img src={logo} alt="StudySathi AI" className="w-8 h-8 object-contain" />
+            <div className="flex items-center gap-2">
+              <span className="text-lg font-bold tracking-tight text-stone-900">StudySathi</span>
+              <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200">
+                AI
+              </span>
+            </div>
+          </div>
+          <div className="text-xs text-stone-500 font-medium hidden sm:block">
+            Exam Preparation & AI Study Notes
+          </div>
+        </div>
+      </header>
 
-        </motion.header>
-
-        <main className='max-w-7xl mx-auto py-10 grid grid-cols-1 lg:grid-cols-2 gap-20 items-center'>
+      {/* Main Container */}
+      <main className="max-w-7xl mx-auto px-6 py-12 lg:py-16 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center flex-1">
         
-        {/* LEFT CONTENT */}
-        <motion.div 
-         initial = {{opacity: 0 , x:-60}}
-        animate = {{opacity:1 , x:0}}
-        transition={{duration:0.7}}
-        >
-            <h1 className='text-5xl lg:text-6xl font-extrabold leading-tight
-              bg-gradient-to-br from-black/90 via-black/60 to-black/90
-              bg-clip-text text-transparent'>
-                Unlock Smart <br /> AI Notes
-              </h1>
-              <motion.button
+        {/* Left Side: Value Proposition & Auth Button */}
+        <div className="lg:col-span-7 space-y-6">
+          
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-stone-100 border border-stone-200 text-stone-700 text-xs font-semibold">
+            <span className="w-2 h-2 rounded-full bg-emerald-600 animate-pulse"></span>
+            Exam-focused revision and structured notes engine
+          </div>
+
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-stone-900 leading-[1.12]">
+            Smart study notes, <br className="hidden sm:inline" />
+            <span className="text-emerald-700">structured for exams</span>
+          </h1>
+
+          <p className="text-lg text-stone-600 leading-relaxed max-w-xl">
+            Stop spending hours organizing fragmented textbook chapters. Generate high-yield revision summaries, flow diagrams, question banks, and clean PDFs in seconds.
+          </p>
+
+          {/* Call to action */}
+          <div className="pt-2 space-y-4">
+            <button
               onClick={handleGoogleAuth}
-              whileHover={{
-                y:-10,
-                rotateX:8,
-                rotateY:-8,
-                scale:1.07
-              }}
-              whileTap={{scale:0.97}}
-              transition={{ type: "spring", stiffness: 200, damping: 18 }}
-               className='mt-10 px-10 py-3 rounded-xl
-              flex items-center gap-3
-              bg-gradient-to-br from-black/90 via-black/80 to-black/90
-              border border-white/10
-              text-white font-semibold text-lg
-              shadow-[0_25px_60px_rgba(0,0,0,0.7)]'>
-                <FcGoogle size={22}/>
-                Continue with Google
+              disabled={loading}
+              className="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-stone-900 hover:bg-stone-800 text-white font-semibold text-base shadow-sm hover:shadow transition-all flex items-center justify-center gap-3 cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed"
+            >
+              <FcGoogle className="w-5 h-5 bg-white rounded-full p-0.5" />
+              <span>{loading ? "Signing in..." : "Continue with Google"}</span>
+              <FiArrowRight className="w-4 h-4 text-stone-400" />
+            </button>
 
+            {errorMsg && (
+              <div className="p-3 rounded-lg bg-red-50 border border-red-200 text-red-700 text-sm">
+                {errorMsg}
+              </div>
+            )}
 
-              </motion.button>
+            <div className="flex items-center gap-2 text-xs font-medium text-stone-600 pt-1">
+              <span className="w-2 h-2 rounded-full bg-amber-500"></span>
+              <span><strong>50 free credits</strong> granted on registration. No credit card required.</span>
+            </div>
+          </div>
 
-              <p className=' mt-6 max-w-xl text-lg
-              bg-gradient-to-br from-gray-700 via-gray-500/80 to-gray-700
-              bg-clip-text text-transparent'>
-                You get <span className="font-semibold">50 FREE credits</span> to create
-            exam notes, project notes, charts, graphs and
-            download clean PDFs — instantly using AI.
-              </p>
-              <p className='mt-4 text-sm text-gray-500'> Start with 50 free credits • Upgrade anytime for more credits • Instant access</p>
-
-        </motion.div>
-
-        {/* RIGHT CONTENT */}
-        <div className='grid grid-cols-1 sm:grid-cols-2 gap-8'>
-            <Feature icon="🎁" title="50 Free Credits" des="Start with 50 credits to generate notes without paying."/>
-             <Feature icon="📘" title="Exam Notes" des="High-yield, revision-ready exam-oriented notes." />
-          <Feature icon="📂" title="Project Notes" des="Well-structured documentation for assignments & projects." />
-          <Feature icon="📊" title="Charts & Graphs" des="Auto-generated diagrams, charts and flow graphs." />
-          <Feature icon="⬇️" title="Free PDF Download" des="Download clean, printable PDFs instantly." />
+          {/* Quick trust metrics */}
+          <div className="pt-6 border-t border-stone-200 grid grid-cols-3 gap-4 max-w-lg">
+            <div>
+              <p className="text-2xl font-bold text-stone-900">50+</p>
+              <p className="text-xs text-stone-500 mt-0.5">Free starter credits</p>
+            </div>
+            <div>
+              <p className="text-2xl font-bold text-stone-900">100%</p>
+              <p className="text-xs text-stone-500 mt-0.5">Exam oriented syllabus</p>
+            </div>
+            <div>
+              <p className="text-2xl font-bold text-stone-900">1-Click</p>
+              <p className="text-xs text-stone-500 mt-0.5">Instant PDF downloads</p>
+            </div>
+          </div>
 
         </div>
 
+        {/* Right Side: Feature Highlights */}
+        <div className="lg:col-span-5 space-y-4">
+          
+          <div className="bg-white rounded-2xl border border-stone-200 p-6 shadow-xs space-y-4">
+            <h3 className="text-sm font-bold text-stone-900 uppercase tracking-wider">What you get</h3>
+            
+            <FeatureRow
+              icon={<FiBookOpen className="w-5 h-5 text-emerald-700" />}
+              title="Exam-Targeted Summaries"
+              description="High-yield concepts, definitions, and formulas broken down point-by-point."
+            />
 
-        </main>
-      
+            <FeatureRow
+              icon={<FiPieChart className="w-5 h-5 text-amber-700" />}
+              title="Interactive Flow Diagrams"
+              description="Automated system architectures, timelines, and decision trees for complex topics."
+            />
+
+            <FeatureRow
+              icon={<FiFileText className="w-5 h-5 text-stone-700" />}
+              title="Expected Exam Questions"
+              description="Short and long questions with model answers categorized by probability."
+            />
+
+            <FeatureRow
+              icon={<FiDownload className="w-5 h-5 text-teal-700" />}
+              title="Clean Printable PDFs"
+              description="Cleanly typeset lecture-ready PDF files formatted for study and prints."
+            />
+          </div>
+
+        </div>
+
+      </main>
+
+      {/* Clean Minimal Footer */}
+      <footer className="border-t border-stone-200 bg-white py-6">
+        <div className="max-w-7xl mx-auto px-6 text-center text-xs text-stone-500">
+          © {new Date().getFullYear()} StudySathi AI • Built for focused, distraction-free learning.
+        </div>
+      </footer>
+
     </div>
   )
 }
-function Feature({icon , title , des}){
-    return(
-        <motion.div 
-        whileHover={{ y: -12, rotateX: 8, rotateY: -8, scale: 1.05 }}
-       transition={{ type: "spring", stiffness: 200, damping: 18 }}
-        className='relative rounded-2xl p-6
-        bg-gradient-to-br from-black/90 via-black/80 to-black/90
-        backdrop-blur-2xl
-        border border-white/10
-        shadow-[0_30px_80px_rgba(0,0,0,0.7)]
-        text-white'
-         style={{ transformStyle: "preserve-3d" }}
-        >
-         
-            <div className='relative z-10' style={{ transform: "translateZ(30px)" }}>
-                 <div className="text-4xl mb-3">{icon}</div>
-        <h3 className="text-lg font-semibold mb-2">{title}</h3>
-        <p className="text-gray-300 text-sm leading-relaxed">{des}</p>
 
-            </div>
-          
-
-
-        </motion.div>
-    )
+function FeatureRow({ icon, title, description }) {
+  return (
+    <div className="flex items-start gap-3.5 p-3 rounded-xl hover:bg-stone-50 transition-colors border border-transparent hover:border-stone-100">
+      <div className="mt-0.5 p-2 rounded-lg bg-stone-100 border border-stone-200/60">
+        {icon}
+      </div>
+      <div>
+        <h4 className="text-sm font-semibold text-stone-900">{title}</h4>
+        <p className="text-xs text-stone-600 mt-0.5 leading-relaxed">{description}</p>
+      </div>
+    </div>
+  )
 }
 
 export default Auth

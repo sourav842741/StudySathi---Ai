@@ -5,169 +5,187 @@ import { useDispatch, useSelector } from 'react-redux'
 import axios from 'axios'
 import { serverUrl } from '../App'
 import { setUserData } from '../redux/userSlice'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
+import { FiPlus, FiBookOpen, FiLogOut, FiCreditCard } from "react-icons/fi"
 
 function Navbar() {
-    const { userData } = useSelector((state) => state.user)
-    const credits = userData.credits
-    const [showCredits,setShowCredits] = useState(false)
-    const [showProfile,setShowProfile] = useState(false)
-    const navigate = useNavigate()
-    const dispatch = useDispatch()
-    const handleSignOut = async () => {
-        try {
-            await axios.get(serverUrl+ "/api/auth/logout" , {withCredentials:true})
-            dispatch(setUserData(null))
-            navigate("/auth")
-            
-            
-        } catch (error) {
-            console.log(error)
-        }
+  const { userData } = useSelector((state) => state.user)
+  const credits = userData?.credits ?? 0
+  const [showCredits, setShowCredits] = useState(false)
+  const [showProfile, setShowProfile] = useState(false)
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
+
+  const handleSignOut = async () => {
+    try {
+      await axios.get(serverUrl + "/api/auth/logout", { withCredentials: true })
+      dispatch(setUserData(null))
+      navigate("/auth")
+    } catch (error) {
+      console.log(error)
     }
-    return (
-        <motion.div
-            initial={{ opacity: 0, y: -15 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1.5 }}
-            className='relative z-20 mx-6 mt-6
-        rounded-2xl
-        bg-gradient-to-br from-black/90 via-black/80 to-black/90
-        backdrop-blur-2xl
-        border border-white/10
-        shadow-[0_22px_55px_rgba(0,0,0,0.75)]
-        flex items-center justify-between px-8 py-4'>
+  }
 
-            <div className='flex items-center gap-3'>
-                <img src={logo} alt="examnotes" className='w-9 h-9' />
-                <span className='text-lg hidden md:block font-semibold text-white'>
-                    StudySathi <span className='text-gray-400'>AI</span>
-                </span>
-            </div>
+  return (
+    <header className="sticky top-0 z-30 bg-white/95 backdrop-none border-b border-stone-200 transition-all">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+        
+        {/* Brand */}
+        <Link to="/" className="flex items-center gap-3 group">
+          <img src={logo} alt="StudySathi AI" className="w-8 h-8 object-contain" />
+          <div className="flex items-center gap-2">
+            <span className="text-lg font-bold tracking-tight text-stone-900 group-hover:text-emerald-800 transition-colors">
+              StudySathi
+            </span>
+            <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+              AI
+            </span>
+          </div>
+        </Link>
 
-            <div className='flex items-center gap-6 relative'>
-                <div className='relative'>
+        {/* Navigation links & User actions */}
+        <div className="flex items-center gap-3 sm:gap-4">
+          <button
+            onClick={() => navigate("/notes")}
+            className="hidden sm:inline-flex items-center gap-1.5 text-sm font-medium text-stone-700 hover:text-stone-900 px-3 py-1.5 rounded-lg hover:bg-stone-100 transition-colors"
+          >
+            <FiBookOpen className="w-4 h-4 text-stone-500" />
+            <span>Generate Notes</span>
+          </button>
 
-                    <motion.div
-                    onClick={()=>{setShowCredits(!showCredits);setShowProfile(false)}}
-                     whileHover={{scale:1.07}}
-                    whileTap={{scale:0.97}}
-                     className='flex items-center justify-center gap-1
-                px-4 py-2 rounded-full
-                bg-white/10
-                border border-white/20
-                text-white text-sm
-                shadow-md
-                cursor-pointer'>
-                    <span className='text-xl'>💠</span>
-                    <span>{credits}</span>
-                    <motion.span whileHover={{scale:1.2}}
-                    whileTap={{scale:0.97}}
-                    className='ml-2 h-5 w-5 flex items-center justify-center
-                  rounded-full bg-white  text-xs font-bold'
-                    >
-                        ➕
+          <button
+            onClick={() => navigate("/history")}
+            className="hidden sm:inline-flex items-center gap-1.5 text-sm font-medium text-stone-700 hover:text-stone-900 px-3 py-1.5 rounded-lg hover:bg-stone-100 transition-colors"
+          >
+            <span>Past Notes</span>
+          </button>
 
-                    </motion.span>
+          {/* Credits pill */}
+          <div className="relative">
+            <button
+              onClick={() => {
+                setShowCredits(!showCredits)
+                setShowProfile(false)
+              }}
+              className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-amber-50 hover:bg-amber-100/80 border border-amber-200/90 text-amber-900 text-sm font-semibold transition-colors cursor-pointer"
+            >
+              <span className="text-base">⚡</span>
+              <span>{credits}</span>
+              <span className="text-xs font-normal text-amber-800 hidden md:inline">credits</span>
+              <span className="ml-1 w-5 h-5 rounded-full bg-amber-200/80 hover:bg-amber-300 flex items-center justify-center text-amber-900">
+                <FiPlus className="w-3 h-3" />
+              </span>
+            </button>
 
-                    </motion.div>
-                      <AnimatePresence>
+            <AnimatePresence>
+              {showCredits && (
+                <motion.div
+                  initial={{ opacity: 0, y: 8, scale: 0.98 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: 8, scale: 0.98 }}
+                  transition={{ duration: 0.15 }}
+                  className="absolute right-0 mt-2 w-72 bg-white rounded-2xl border border-stone-200 shadow-xl p-5 text-stone-900 z-50"
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <h4 className="font-semibold text-stone-900">Available Credits</h4>
+                    <span className="text-base font-bold text-amber-700">{credits}</span>
+                  </div>
+                  <p className="text-xs text-stone-600 mb-4 leading-relaxed">
+                    Credits are used to create structured notes, interactive diagrams, and clean printable PDFs.
+                  </p>
+                  <button
+                    onClick={() => {
+                      setShowCredits(false)
+                      navigate("/pricing")
+                    }}
+                    className="w-full py-2.5 px-4 rounded-xl bg-stone-900 hover:bg-stone-800 text-white font-medium text-sm transition-colors flex items-center justify-center gap-2"
+                  >
+                    <FiCreditCard className="w-4 h-4" />
+                    <span>Get More Credits</span>
+                  </button>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
 
-                    {showCredits && 
-                  
-                    <motion.div 
-                    initial={{ opacity: 0, y: -10, scale: 0.95 }}
-                  animate={{ opacity: 1, y: 10, scale: 1 }}
-                  exit={{ opacity: 0, y: -10, scale: 0.95 }}
-                  transition={{ duration: 0.2 }}
-                    className='absolute right-[-50px] mt-4 w-64
-                    rounded-2xl
-                    bg-black/90 backdrop-blur-xl
-                    border border-white/10
-                    shadow-[0_25px_60px_rgba(0,0,0,0.7)]
-                    p-4 text-white'>
-                        <h4 className='font-semibold mb-2'>Buy Credits</h4>
-                        <p className='text-sm text-gray-300 mb-4'>Use credits to generate AI notes, diagrams & PDFs.</p>
-                        <button onClick={()=>{setShowCredits(false);navigate("/pricing")}} className=' w-full py-2 rounded-lg
-                      bg-gradient-to-br from-white to-gray-200
-                      text-black font-semibold
-                      hover:opacity-90'>Buy More Credits</button>
+          {/* Profile Dropdown */}
+          <div className="relative">
+            <button
+              onClick={() => {
+                setShowProfile(!showProfile)
+                setShowCredits(false)
+              }}
+              className="w-9 h-9 rounded-full bg-stone-100 hover:bg-stone-200 border border-stone-300 flex items-center justify-center text-stone-800 font-bold text-sm transition-colors cursor-pointer"
+            >
+              {userData?.name ? userData.name.slice(0, 1).toUpperCase() : "U"}
+            </button>
 
+            <AnimatePresence>
+              {showProfile && (
+                <motion.div
+                  initial={{ opacity: 0, y: 8, scale: 0.98 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: 8, scale: 0.98 }}
+                  transition={{ duration: 0.15 }}
+                  className="absolute right-0 mt-2 w-56 bg-white rounded-2xl border border-stone-200 shadow-xl p-2 text-stone-900 z-50"
+                >
+                  <div className="px-3 py-2 border-b border-stone-100 mb-1">
+                    <p className="text-sm font-semibold text-stone-900 truncate">{userData?.name}</p>
+                    <p className="text-xs text-stone-500 truncate">{userData?.email}</p>
+                  </div>
 
+                  <button
+                    onClick={() => {
+                      setShowProfile(false)
+                      navigate("/notes")
+                    }}
+                    className="w-full flex items-center gap-2.5 px-3 py-2 text-sm text-stone-700 hover:text-stone-900 hover:bg-stone-50 rounded-lg transition-colors text-left"
+                  >
+                    <FiBookOpen className="w-4 h-4 text-stone-500" />
+                    <span>Create Notes</span>
+                  </button>
 
-                    </motion.div>
-                    }</AnimatePresence>
-                </div>
+                  <button
+                    onClick={() => {
+                      setShowProfile(false)
+                      navigate("/history")
+                    }}
+                    className="w-full flex items-center gap-2.5 px-3 py-2 text-sm text-stone-700 hover:text-stone-900 hover:bg-stone-50 rounded-lg transition-colors text-left"
+                  >
+                    <span className="text-stone-500">📁</span>
+                    <span>Note History</span>
+                  </button>
 
-                 <div className='relative'>
+                  <button
+                    onClick={() => {
+                      setShowProfile(false)
+                      navigate("/pricing")
+                    }}
+                    className="w-full flex items-center gap-2.5 px-3 py-2 text-sm text-stone-700 hover:text-stone-900 hover:bg-stone-50 rounded-lg transition-colors text-left"
+                  >
+                    <FiCreditCard className="w-4 h-4 text-stone-500" />
+                    <span>Pricing Plans</span>
+                  </button>
 
-                    <motion.div
-                    onClick={()=>{setShowProfile(!showProfile);setShowCredits(false)}}
-                     whileHover={{scale:1.1}}
-                    whileTap={{scale:0.97}}
-                     className='flex items-center justify-center gap-1
-                px-4 py-2 rounded-full
-                bg-white/10
-                border border-white/20
-                text-white text-sm
-                shadow-md
-                cursor-pointer'>
-                    <span className='text-lg'>{userData?.name.slice(0,1).toUpperCase()}</span>
-                   
+                  <div className="h-px bg-stone-100 my-1" />
 
-                    </motion.div>
-                    <AnimatePresence>
-                    
-                    {showProfile && 
-                  
-                    <motion.div 
-                    initial={{ opacity: 0, y: -10, scale: 0.95 }}
-                  animate={{ opacity: 1, y: 10, scale: 1 }}
-                  exit={{ opacity: 0, y: -10, scale: 0.95 }}
-                  transition={{ duration: 0.2 }}
-                    className='absolute right-0 mt-4 w-52
-                    rounded-2xl
-                    bg-black/90 backdrop-blur-xl
-                    border border-white/10
-                    shadow-[0_25px_60px_rgba(0,0,0,0.7)]
-                    p-4 text-white'>
-
-                       <MenuItem text="History" onClick={()=>{setShowProfile(false);navigate("/history")}}/>
-                       <div className="h-px bg-white/10 mx-3" />
-                       <MenuItem text="sign out" red  onClick={handleSignOut}/>
-                       
-
-
-
-                    </motion.div>
-                    }</AnimatePresence>
-
-                    
-                </div>
-            </div>
-
-
-        </motion.div>
-    )
-}
-
-function MenuItem ({onClick , text , red}){
-    return(
-        <div
-        onClick={onClick} className={`
-        w-full text-left px-5 py-3 text-sm
-        transition-colors rounded-lg
-        ${
-          red
-            ? "text-red-400 hover:bg-red-500/10"
-            : "text-gray-200 hover:bg-white/10"
-        }
-      `}>
-        {text}
+                  <button
+                    onClick={handleSignOut}
+                    className="w-full flex items-center gap-2.5 px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-colors text-left"
+                  >
+                    <FiLogOut className="w-4 h-4 text-red-500" />
+                    <span>Sign Out</span>
+                  </button>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
 
         </div>
-    )
-}
 
+      </div>
+    </header>
+  )
+}
 
 export default Navbar

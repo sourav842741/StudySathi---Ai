@@ -1,61 +1,59 @@
 import React, { useEffect } from 'react'
 import { motion } from "motion/react"
-import { FiCheckCircle } from "react-icons/fi";
-import { getCurrentUser } from '../services/api';
-import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { FiCheckCircle, FiArrowRight } from "react-icons/fi"
+import { getCurrentUser } from '../services/api'
+import { useDispatch } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
+import Navbar from '../components/Navbar'
+import Footer from '../components/Footer'
+
 function PaymentSuccess() {
-    const dispatch = useDispatch()
-    const navigate = useNavigate()
-    useEffect(()=>{
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
 
-        getCurrentUser(dispatch)
+  useEffect(() => {
+    getCurrentUser(dispatch)
+    const t = setTimeout(() => {
+      navigate("/")
+    }, 4000)
+    return () => clearTimeout(t)
+  }, [dispatch, navigate])
 
-        const t = setTimeout(() => {
+  return (
+    <div className="min-h-screen bg-[#fbfbf9] text-stone-900 flex flex-col justify-between">
+      <Navbar />
 
-            navigate("/")
+      <main className="max-w-md mx-auto px-6 py-16 flex-1 flex items-center justify-center w-full">
+        <div className="bg-white rounded-2xl border border-stone-200 shadow-sm p-8 text-center space-y-5 w-full">
+          <div className="w-16 h-16 rounded-full bg-emerald-50 text-emerald-600 border border-emerald-200 flex items-center justify-center text-3xl mx-auto">
+            <FiCheckCircle />
+          </div>
 
-            
-        }, 5000);
+          <div className="space-y-1.5">
+            <h1 className="text-2xl font-extrabold text-stone-900 tracking-tight">
+              Payment Successful!
+            </h1>
+            <p className="text-xs text-stone-600 leading-relaxed">
+              Your credits have been added to your account balance. You can now generate more AI study guides.
+            </p>
+          </div>
 
-        return ()=> clearTimeout(t)
-
-    },[])
-    return (
-        <div className='min-h-screen flex flex-col items-center justify-center p-4 gap-4'>
-            <motion.div
-                initial={{ scale: 0, rotate: -180 }}
-                animate={{ scale: 1, rotate: 360 }}
-                transition={{
-                    duration: 0.8,
-                    ease: "easeOut"
-                }}
-                className="text-green-500 text-6xl">
-                <FiCheckCircle />
-
-            </motion.div>
-
-            <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3 }}
-        className="text-2xl font-bold text-green-600">
-            Payment Successful! Credits Added
-
-            </motion.h1>
-
-            <motion.p 
-            initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.6 }}
-        className="text-gray-500 text-sm">
-
-               Redirecting to home...
-
-            </motion.p>
-
+          <div className="pt-2">
+            <button
+              onClick={() => navigate("/notes")}
+              className="w-full py-3 px-4 rounded-xl bg-stone-900 hover:bg-stone-800 text-white font-semibold text-xs transition-colors flex items-center justify-center gap-2 cursor-pointer shadow-xs"
+            >
+              <span>Go to Note Generator</span>
+              <FiArrowRight className="w-4 h-4" />
+            </button>
+            <p className="text-[11px] text-stone-400 mt-3">Redirecting automatically in a few seconds...</p>
+          </div>
         </div>
-    )
+      </main>
+
+      <Footer />
+    </div>
+  )
 }
 
 export default PaymentSuccess

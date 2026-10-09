@@ -28,9 +28,16 @@ app.post(
 );
 
 // ================= MIDDLEWARE =================
+const allowedOrigins = [
+  "http://localhost:5173",
+  "http://localhost:5174",
+  "https://studysathi-ai-client.onrender.com",
+  ...(process.env.CLIENT_URL ? [process.env.CLIENT_URL] : []),
+];
+
 app.use(
   cors({
-    origin: "https://studysathi-ai-client.onrender.com",
+    origin: allowedOrigins,
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   })
